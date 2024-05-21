@@ -47,7 +47,7 @@ class TodoController extends Controller
         $todo->started_at = $request->started_at;
         $todo->save();
 
-        (new UserActivityService())->create($request->user()->id, "CREATE TODO", "Create new todo : {$todo->hash}");
+        (new UserActivityService())->create($request->user(), "CREATE TODO", "Create new todo : {$todo->hash}");
 
         return $this->sendResponse(new TodosResource($todo), __('general.ok'));
     }
@@ -77,7 +77,7 @@ class TodoController extends Controller
         $todo->started_at = $request->started_at;
         $todo->save();
 
-        (new UserActivityService())->create($request->user()->id, "UPDATE TODO", "Update todo : {$todo->hash}");
+        (new UserActivityService())->create($request->user(), "UPDATE TODO", "Update todo : {$todo->hash}");
 
         return $this->sendResponse(new TodosResource($todo), __('general.ok'));
     }
@@ -92,7 +92,7 @@ class TodoController extends Controller
 
         $todo->delete();
 
-        (new UserActivityService())->create($request->user()->id, "DELETE TODO", "Delete todo : {$hash}");
+        (new UserActivityService())->create($request->user(), "DELETE TODO", "Delete todo : {$hash}");
 
         return $this->sendResponse([], __('general.ok'));
     }

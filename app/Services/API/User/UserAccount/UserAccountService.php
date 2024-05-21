@@ -3,6 +3,7 @@
 namespace App\Services\API\User\UserAccount;
 
 use App\Models\User;
+use App\Services\API\User\UserActivity\UserActivityService;
 use App\Services\BaseService;
 use Illuminate\Support\Facades\Hash;
 
@@ -21,6 +22,9 @@ class UserAccountService extends BaseService {
         }
 
         $user->save();
+
+        (new UserActivityService())->create($user, 'UPDATE_PROFILE', 'Update profile');
+
         return $this->success($user, __('alert.profile_updated'));
 
     }

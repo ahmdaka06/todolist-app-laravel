@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>Laravel</title>
 
         <!-- Fonts -->
@@ -16,6 +17,9 @@
         </style>
     </head>
     <body class="antialiased">
+        <center>
+            <button id="btn-nft-enable" onclick="initFirebaseMessagingRegistration()" class="btn btn-danger btn-xs btn-flat">Allow for Notification</button>
+        </center>
         <div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">
             @if (Route::has('login'))
                 <div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right z-10">
@@ -129,5 +133,67 @@
                 </div>
             </div>
         </div>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.23.0/firebase.js"></script>
+        <script>
+
+            var firebaseConfig ={
+                apiKey: "AIzaSyCCJIUp5crRz2aVAhHMpUa1o8qsSHTbJB8",
+                authDomain: "todoapps-6ef38.firebaseapp.com",
+                projectId: "todoapps-6ef38",
+                storageBucket: "todoapps-6ef38.appspot.com",
+                messagingSenderId: "381865989623",
+                appId: "1:381865989623:web:960d436da693803e5f4af2",
+                measurementId: "G-WRM8DXMYFT"
+            };
+
+            firebase.initializeApp(firebaseConfig);
+            const messaging = firebase.messaging();
+
+            function initFirebaseMessagingRegistration() {
+                    messaging
+                    .requestPermission()
+                    .then(function () {
+                        return messaging.getToken()
+                    })
+                    .then(function(token) {
+                        console.log(token);
+
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+
+                        $.ajax({
+                            url: '{{ route("save-token") }}',
+                            type: 'POST',
+                            data: {
+                                token: token
+                            },
+                            dataType: 'JSON',
+                            success: function (response) {
+                                alert('Token saved successfully.');
+                            },
+                            error: function (err) {
+                                console.log('User Chat Token Error'+ err);
+                            },
+                        });
+
+                    }).catch(function (err) {
+                        console.log('User Chat Token Error'+ err);
+                    });
+            }
+
+            messaging.onMessage(function(payload) {
+                const noteTitle = payload.notification.title;
+                const noteOptions = {
+                    body: payload.notification.body,
+                    icon: payload.notification.icon,
+                };
+                new Notification(noteTitle, noteOptions);
+            });
+
+        </script>
     </body>
 </html>

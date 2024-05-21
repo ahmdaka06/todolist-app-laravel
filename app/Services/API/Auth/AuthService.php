@@ -43,7 +43,7 @@ class AuthService extends BaseService
         $register->password = bcrypt($data['password']);
         $register->save();
 
-        (new UserActivityService())->create($register->id, 'REGISTER', 'Register new account');
+        (new UserActivityService())->create($register, 'REGISTER', 'Register new account');
 
         return $this->success($register, __('auth.register_success'));
     }
