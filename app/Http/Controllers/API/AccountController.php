@@ -54,4 +54,14 @@ class AccountController extends Controller
 
         return $this->sendResponse($userAccountService['data'], $userAccountService['message']);
     }
+
+    public function saveToken(Request $request)
+    {
+        if ($request->token == null) {
+            return $this->sendError('Token required', [], 400);
+        }
+        $request->user()->update(['device_token' => $request->token]);
+        return $this->sendResponse([], __('general.ok'));
+    }
+
 }

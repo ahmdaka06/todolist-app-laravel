@@ -29,6 +29,7 @@ Route::group(['namespace' => 'API', 'middleware' => ['json']], function () {
             Route::get('/logout', [LoginController::class, 'logout']);
 
             Route::group(['prefix' => 'account'], function () {
+                Route::post('/saveToken', [AccountController::class, 'saveToken']);
                 Route::get('/profile', [AccountController::class, 'profile']);
                 Route::put('/profile', [AccountController::class, 'update']);
                 Route::get('/activities', [AccountController::class, 'activities']);

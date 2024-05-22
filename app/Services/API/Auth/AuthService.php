@@ -26,7 +26,7 @@ class AuthService extends BaseService
 
         $token = $login->createToken('authToken')->plainTextToken;
 
-        (new UserActivityService())->create($login->id, 'LOGIN', 'Login to the apps');
+        (new UserActivityService())->create($login, 'LOGIN', 'Login to the apps');
 
         $login->token = $token;
 
